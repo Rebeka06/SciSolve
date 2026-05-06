@@ -1,0 +1,745 @@
+﻿<Window x:Class="SciSolve.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SciSolve"
+        Title="SciSolve — Numerical Methods Learning Tool"
+        Width="1320" Height="840" MinWidth="1180" MinHeight="760"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BrNavyDark}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="58"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- TITLE BAR -->
+        <Grid Grid.Row="0" Background="{StaticResource BrNavyDark}">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                <TextBlock Text="⚛  SciSolve"
+                           FontSize="20" FontWeight="Bold"
+                           Foreground="{StaticResource BrWhite}"
+                           FontFamily="{StaticResource FontUI}"/>
+                <TextBlock Text="  —  Numerical Methods Learning Tool"
+                           FontSize="13" VerticalAlignment="Bottom" Margin="0,0,0,2"
+                           Foreground="{StaticResource BrWhiteMuted}"/>
+            </StackPanel>
+            <TextBlock Text="v3.0  |  C# WPF"
+                       HorizontalAlignment="Right" VerticalAlignment="Center"
+                       Margin="0,0,20,0"
+                       Foreground="{StaticResource BrGrayLight}"
+                       FontSize="11"/>
+        </Grid>
+
+        <!-- Separator -->
+        <Border Grid.Row="1" Background="{StaticResource BrGrayBorder}"/>
+
+        <!-- TAB CONTROL -->
+        <TabControl Grid.Row="2" x:Name="MainTabs"
+                    Background="{StaticResource BrNavyDark}"
+                    BorderThickness="0">
+
+            <!-- TAB 1: EQUATIONS -->
+            <TabItem Header="  📐  Equations  ">
+                <Grid Background="{StaticResource BrNavyDark}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="290"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- LEFT: Inputs -->
+                    <Border Grid.Column="0" Style="{StaticResource CardPanel}"
+                            Margin="10,10,5,10">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="EQUATION SOLVING"
+                                           Style="{StaticResource SectionHeader}"/>
+
+                                <!-- f(x) -->
+                                <TextBlock Text="f(x) =" Style="{StaticResource InputLabel}"
+                                           Margin="0,8,0,2"/>
+                                <TextBox x:Name="TbFx" Text="x^3 - x - 2"
+                                         ToolTip="Enter your function. Supported: sin, cos, exp, log, sqrt, ^, pi, e"/>
+
+                                <!-- f'(x) -->
+                                <TextBlock Text="f'(x) = (Newton-Raphson)"
+                                           Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                                <TextBox x:Name="TbDfx" Text="3*x^2 - 1"
+                                         ToolTip="Derivative of f(x). Required for Newton-Raphson only."/>
+
+                                <!-- g(x) -->
+                                <TextBlock Text="g(x) = (Fixed Point)"
+                                           Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                                <TextBox x:Name="TbGx" Text="(x + 2)^(1/3)"
+                                         ToolTip="Rewrite f(x)=0 as x=g(x). Required for Fixed Point only."/>
+
+                                <Separator/>
+
+                                <!-- a, b, x0, x1 -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                        <TextBlock Text="a =" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbA" Text="1"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                        <TextBlock Text="b =" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbB" Text="2"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,8,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                        <TextBlock Text="x₀ =" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbX0" Text="1.5"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                        <TextBlock Text="x₁ = (Secant)" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbX1" Text="2.0"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Separator/>
+
+                                <!-- Tolerance, Max Iter -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                        <TextBlock Text="Tolerance" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbEqTol" Text="1e-6"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                        <TextBlock Text="Max Iters" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbEqMaxIter" Text="100"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Method -->
+                                <TextBlock Text="Method" Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                                <ComboBox x:Name="CbEqMethod" SelectedIndex="0">
+                                    <ComboBoxItem Content="Auto (Recommended)"/>
+                                    <ComboBoxItem Content="Newton-Raphson"/>
+                                    <ComboBoxItem Content="Secant"/>
+                                    <ComboBoxItem Content="Bisection"/>
+                                    <ComboBoxItem Content="Fixed Point"/>
+                                </ComboBox>
+
+                                <Separator/>
+
+                                <!-- Buttons -->
+                                <Button Content="▶   Solve"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Click="BtnSolveEquation_Click"
+                                        Margin="0,4,0,6" Height="38"/>
+                                <Button Content="⬇   Export to Excel"
+                                        Style="{StaticResource GreenButton}"
+                                        Click="BtnExportEquation_Click"
+                                        Height="32"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- RIGHT: Results -->
+                    <Grid Grid.Column="1" Margin="5,10,10,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" MinHeight="150"/>
+                            <RowDefinition Height="180"/>
+                            <RowDefinition Height="220"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Log -->
+                        <Border Grid.Row="0" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Step-by-Step Log"
+                                           Style="{StaticResource CardTitle}"/>
+                                <TextBox Grid.Row="1" x:Name="TbEqLog"
+                                         Style="{StaticResource LogText}"/>
+                                
+                                <!-- Result highlight -->
+                                <Border Grid.Row="2" x:Name="EqResultBorder"
+                                        Style="{StaticResource ResultBox}"
+                                        Visibility="Collapsed">
+                                    <TextBlock x:Name="EqResultText"
+                                               Style="{StaticResource ResultText}"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!-- Iteration Table -->
+                        <Border Grid.Row="1" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Iteration Table" Style="{StaticResource CardTitle}"/>
+                                <DataGrid Grid.Row="1" x:Name="DgEqSteps"
+                                          ItemsSource="{Binding EqSteps}">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Iter"    Binding="{Binding Iteration}"     Width="55"/>
+                                        <DataGridTextColumn Header="x value" Binding="{Binding XFormatted}"   Width="*"/>
+                                        <DataGridTextColumn Header="f(x)"    Binding="{Binding FX}"           Width="*"/>
+                                        <DataGridTextColumn Header="|error|" Binding="{Binding ErrorFormatted}" Width="100"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Border>
+
+                        <!-- Chart placeholder -->
+                        <Border Grid.Row="2" Style="{StaticResource CardPanel}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Convergence Chart" Style="{StaticResource CardTitle}"/>
+                                <Canvas Grid.Row="1" x:Name="EqChartCanvas"
+                                        Background="{StaticResource BrNavyDark}"
+                                        ClipToBounds="True"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 2: LINEAR SYSTEMS -->
+            <TabItem Header="  🔢  Linear Systems  ">
+                <Grid Background="{StaticResource BrNavyDark}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="340"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- LEFT -->
+                    <Border Grid.Column="0" Style="{StaticResource CardPanel}"
+                            Margin="10,10,5,10">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="GAUSS-SEIDEL METHOD" Style="{StaticResource SectionHeader}"/>
+
+                                <!-- Size selector -->
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="System size n =" Grid.Column="0"
+                                               Style="{StaticResource InputLabel}" Margin="0,0,8,0"
+                                               VerticalAlignment="Center"/>
+                                    <ComboBox x:Name="CbGsSize" Grid.Column="1" SelectedIndex="1"
+                                              SelectionChanged="CbGsSize_Changed">
+                                        <ComboBoxItem Content="2×2"/>
+                                        <ComboBoxItem Content="3×3"/>
+                                        <ComboBoxItem Content="4×4"/>
+                                    </ComboBox>
+                                    <Button Grid.Column="2" Content="Rebuild"
+                                            Style="{StaticResource NavyButton}"
+                                            Padding="10,4" Margin="6,0,0,0"
+                                            Click="BtnGsRebuild_Click"/>
+                                </Grid>
+
+                                <!-- Matrix grid -->
+                                <TextBlock Text="Matrix A  |  b" Style="{StaticResource CardTitle}"/>
+                                <Grid x:Name="GsMatrixGrid" Margin="0,0,0,10"/>
+
+                                <Separator/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                        <TextBlock Text="Tolerance" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbGsTol" Text="1e-6"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                        <TextBlock Text="Max Iters" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                        <TextBox x:Name="TbGsMaxIter" Text="100"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Separator/>
+
+                                <Button Content="▶   Solve System"
+                                        Style="{StaticResource PrimaryButton}"
+                                        Click="BtnSolveGauss_Click"
+                                        Margin="0,4,0,6" Height="38"/>
+                                <Button Content="⬇   Export to Excel"
+                                        Style="{StaticResource GreenButton}"
+                                        Click="BtnExportGauss_Click" Height="32"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- RIGHT -->
+                    <Grid Grid.Column="1" Margin="5,10,10,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height="200"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Step-by-Step Log" Style="{StaticResource CardTitle}"/>
+                                <TextBox Grid.Row="1" x:Name="TbGsLog" Style="{StaticResource LogText}"/>
+                                <Border Grid.Row="2" x:Name="GsResultBorder"
+                                        Style="{StaticResource ResultBox}" Visibility="Collapsed">
+                                    <TextBlock x:Name="GsResultText" Style="{StaticResource ResultText}"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Iteration Summary" Style="{StaticResource CardTitle}"/>
+                                <DataGrid Grid.Row="1" x:Name="DgGsSteps">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Iter"     Binding="{Binding Iteration}" Width="55"/>
+                                        <DataGridTextColumn Header="x values" Binding="{Binding XValues}"  Width="*"/>
+                                        <DataGridTextColumn Header="max|Δx|"  Binding="{Binding MaxErrorFormatted}" Width="110"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2" Style="{StaticResource CardPanel}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Convergence Chart" Style="{StaticResource CardTitle}"/>
+                                <Canvas Grid.Row="1" x:Name="GsChartCanvas"
+                                        Background="{StaticResource BrNavyDark}"
+                                        ClipToBounds="True"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 3: INTERPOLATION -->
+            <TabItem Header="  📈  Interpolation  ">
+                <Grid Background="{StaticResource BrNavyDark}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="290"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource CardPanel}"
+                            Margin="10,10,5,10">
+                        <StackPanel>
+                            <TextBlock Text="INTERPOLATION" Style="{StaticResource SectionHeader}"/>
+
+                            <TextBlock Text="x values (comma-separated)"
+                                       Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                            <TextBox x:Name="TbInterpX" Text="1, 2, 3, 4"
+                                     ToolTip="Enter x data points separated by commas"/>
+
+                            <TextBlock Text="y values (comma-separated)"
+                                       Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                            <TextBox x:Name="TbInterpY" Text="1, 4, 9, 16"/>
+
+                            <TextBlock Text="Evaluate at x ="
+                                       Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                            <TextBox x:Name="TbInterpXVal" Text="2.5"/>
+
+                            <TextBlock Text="Method" Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                            <ComboBox x:Name="CbInterpMethod" SelectedIndex="0">
+                                <ComboBoxItem Content="Lagrange"/>
+                                <ComboBoxItem Content="Newton Divided Differences"/>
+                            </ComboBox>
+
+                            <Separator/>
+
+                            <Button Content="▶   Interpolate"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Click="BtnInterpolate_Click"
+                                    Margin="0,4,0,6" Height="38"/>
+                            <Button Content="⬇   Export to Excel"
+                                    Style="{StaticResource GreenButton}"
+                                    Click="BtnExportInterp_Click" Height="32"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Column="1" Margin="5,10,10,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height="220"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Step-by-Step Log" Style="{StaticResource CardTitle}"/>
+                                <TextBox Grid.Row="1" x:Name="TbInterpLog" Style="{StaticResource LogText}"/>
+                                <Border Grid.Row="2" x:Name="InterpResultBorder"
+                                        Style="{StaticResource ResultBox}" Visibility="Collapsed">
+                                    <TextBlock x:Name="InterpResultText" Style="{StaticResource ResultText}"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Basis Polynomial Table" Style="{StaticResource CardTitle}"/>
+                                <DataGrid Grid.Row="1" x:Name="DgInterpRows">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="i"        Binding="{Binding I}"            Width="40"/>
+                                        <DataGridTextColumn Header="xᵢ"       Binding="{Binding Xi}"           Width="80"/>
+                                        <DataGridTextColumn Header="yᵢ"       Binding="{Binding Yi}"           Width="80"/>
+                                        <DataGridTextColumn Header="Lᵢ(x)"    Binding="{Binding LiFormatted}"  Width="*"/>
+                                        <DataGridTextColumn Header="yᵢ · Lᵢ"  Binding="{Binding YiLiFormatted}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2" Style="{StaticResource CardPanel}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Polynomial Curve" Style="{StaticResource CardTitle}"/>
+                                <Canvas Grid.Row="1" x:Name="InterpChartCanvas"
+                                        Background="{StaticResource BrNavyDark}" ClipToBounds="True"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 4: INTEGRATION -->
+            <TabItem Header="  ∫  Integration  ">
+                <Grid Background="{StaticResource BrNavyDark}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="290"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource CardPanel}"
+                            Margin="10,10,5,10">
+                        <StackPanel>
+                            <TextBlock Text="NUMERICAL INTEGRATION" Style="{StaticResource SectionHeader}"/>
+
+                            <TextBlock Text="f(x) =" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                            <TextBox x:Name="TbIntF" Text="sin(x)"
+                                     ToolTip="Enter integrand. Supported: sin, cos, exp, log, sqrt, ^"/>
+
+                            <Grid Margin="0,8,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                                    <TextBlock Text="a =" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                    <TextBox x:Name="TbIntA" Text="0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                                    <TextBlock Text="b =" Style="{StaticResource InputLabel}" Margin="0,0,0,2"/>
+                                    <TextBox x:Name="TbIntB" Text="3.14159265"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="n (subintervals)" Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                            <TextBox x:Name="TbIntN" Text="100"/>
+
+                            <TextBlock Text="Method" Style="{StaticResource InputLabel}" Margin="0,8,0,2"/>
+                            <ComboBox x:Name="CbIntMethod" SelectedIndex="0">
+                                <ComboBoxItem Content="Trapezoidal Rule"/>
+                                <ComboBoxItem Content="Simpson's 1/3 Rule"/>
+                            </ComboBox>
+
+                            <Separator/>
+
+                            <Button Content="▶   Integrate"
+                                    Style="{StaticResource PrimaryButton}"
+                                    Click="BtnIntegrate_Click"
+                                    Margin="0,4,0,6" Height="38"/>
+                            <Button Content="⬇   Export to Excel"
+                                    Style="{StaticResource GreenButton}"
+                                    Click="BtnExportInteg_Click" Height="32"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Grid Grid.Column="1" Margin="5,10,10,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="200"/>
+                            <RowDefinition Height="220"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Step-by-Step Log" Style="{StaticResource CardTitle}"/>
+                                <TextBox Grid.Row="1" x:Name="TbIntLog" Style="{StaticResource LogText}"/>
+                                <Border Grid.Row="2" x:Name="IntResultBorder"
+                                        Style="{StaticResource ResultBox}" Visibility="Collapsed">
+                                    <TextBlock x:Name="IntResultText" Style="{StaticResource ResultText}"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Style="{StaticResource CardPanel}" Margin="0,0,0,6">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Integration Table (sample points)" Style="{StaticResource CardTitle}"/>
+                                <DataGrid Grid.Row="1" x:Name="DgIntRows">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="i"             Binding="{Binding I}"              Width="45"/>
+                                        <DataGridTextColumn Header="xᵢ"            Binding="{Binding XiFormatted}"    Width="*"/>
+                                        <DataGridTextColumn Header="f(xᵢ)"         Binding="{Binding FXiFormatted}"   Width="*"/>
+                                        <DataGridTextColumn Header="Weight"        Binding="{Binding Weight}"         Width="70"/>
+                                        <DataGridTextColumn Header="Contribution"  Binding="{Binding ContribFormatted}" Width="*"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2" Style="{StaticResource CardPanel}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Integration Area Visualization" Style="{StaticResource CardTitle}"/>
+                                <Canvas Grid.Row="1" x:Name="IntChartCanvas"
+                                        Background="{StaticResource BrNavyDark}" ClipToBounds="True"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 5: METHOD ADVISOR -->
+            <TabItem Header="  🧭  Method Advisor  ">
+                <Grid Background="{StaticResource BrNavyDark}" Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="420"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                        <TextBlock Text="METHOD SELECTION ADVISOR"
+                                   Style="{StaticResource SectionHeader}" Margin="0,0,0,12"/>
+                        <TextBlock Text="Answer these questions about your problem:"
+                                   Foreground="{StaticResource BrWhiteMuted}" FontSize="12" Margin="0,0,0,16"/>
+
+                        <Border Style="{StaticResource CardPanel}">
+                            <StackPanel>
+                                <TextBlock Text="About your function" Style="{StaticResource CardTitle}"/>
+                                <CheckBox x:Name="ChkHasDeriv"
+                                          Content="I know f'(x) — derivative is available" IsChecked="True"/>
+                                <CheckBox x:Name="ChkHasInterval"
+                                          Content="I have an interval [a, b]" IsChecked="True"/>
+                                <CheckBox x:Name="ChkSignChange"
+                                          Content="f(a) and f(b) have opposite signs (sign change)" IsChecked="True"/>
+                                <CheckBox x:Name="ChkHasX0"
+                                          Content="I have an initial guess x₀" IsChecked="True"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button Content="▶   Get Recommendation"
+                                Style="{StaticResource PrimaryButton}"
+                                Click="BtnAdvise_Click"
+                                Margin="0,16,0,0" Height="42"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1" Style="{StaticResource CardPanel}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="Recommendation" Style="{StaticResource CardTitle}"/>
+                            <TextBox Grid.Row="1" x:Name="TbAdviceLog"
+                                     Style="{StaticResource LogText}"
+                                     FontSize="12.5"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 6: EXCEL FORMULAS GUIDE -->
+            <TabItem Header="  📊  Excel Formulas  ">
+                <Grid Background="{StaticResource BrNavyDark}" Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Excel Implementation Guide"
+                               FontSize="18" FontWeight="SemiBold"
+                               Foreground="{StaticResource BrWhite}"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Grid.Row="1"
+                               Text="Select a method to see ready-to-use Excel formula setup"
+                               Foreground="{StaticResource BrWhiteMuted}" FontSize="12"
+                               Margin="0,0,0,12"/>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="220"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Method list -->
+                        <Border Grid.Column="0" Style="{StaticResource CardPanel}" Margin="0,0,10,0">
+                            <ListBox x:Name="LbExcelMethods"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{StaticResource BrWhiteDim}"
+                                     FontFamily="{StaticResource FontUI}"
+                                     FontSize="13"
+                                     SelectionChanged="LbExcelMethods_Changed">
+                                <ListBoxItem Content="Newton-Raphson"/>
+                                <ListBoxItem Content="Secant"/>
+                                <ListBoxItem Content="Bisection"/>
+                                <ListBoxItem Content="Fixed Point"/>
+                                <ListBoxItem Content="Gauss-Seidel"/>
+                                <ListBoxItem Content="Trapezoidal Rule"/>
+                                <ListBoxItem Content="Simpson's 1/3 Rule"/>
+                                <ListBoxItem Content="Lagrange"/>
+                            </ListBox>
+                        </Border>
+
+                        <!-- Formula display -->
+                        <Border Grid.Column="1" Style="{StaticResource CardPanel}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock x:Name="TbExcelMethodTitle"
+                                           Style="{StaticResource CardTitle}"
+                                           Text="Newton-Raphson Formula Guide"/>
+                                <TextBox Grid.Row="1" x:Name="TbExcelFormula"
+                                         Style="{StaticResource LogText}"
+                                         FontSize="12" IsReadOnly="True"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB 7: ABOUT -->
+            <TabItem Header="  ℹ  About  ">
+                <Grid Background="{StaticResource BrNavyDark}">
+                    <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Style="{StaticResource CardPanel}"
+                            Width="560" Padding="40,36">
+                        <StackPanel>
+                            <TextBlock Text="⚛  SciSolve"
+                                       FontSize="32" FontWeight="Bold"
+                                       Foreground="{StaticResource BrWhite}"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="Numerical Methods Learning Tool  —  v3.0"
+                                       FontSize="14"
+                                       Foreground="{StaticResource BrWhiteMuted}"
+                                       HorizontalAlignment="Center" Margin="0,6,0,4"/>
+                            <TextBlock Text="C# · WPF · MVVM · ClosedXML"
+                                       FontSize="11"
+                                       Foreground="{StaticResource BrGrayLight}"
+                                       HorizontalAlignment="Center" Margin="0,0,0,24"/>
+
+                            <Border Background="{StaticResource BrGrayBorder}" Height="1" Margin="0,0,0,20"/>
+
+                            <!-- Feature list -->
+                            <ItemsControl>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="32"/>
+                                                <ColumnDefinition Width="160"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding Icon}"
+                                                       FontSize="16" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Title}"
+                                                       FontWeight="SemiBold" FontSize="13"
+                                                       Foreground="{StaticResource BrWhiteDim}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding Desc}"
+                                                       FontSize="11"
+                                                       Foreground="{StaticResource BrWhiteMuted}"
+                                                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.Items>
+                                    <local:FeatureItem Icon="📐" Title="Equation Solving"
+                                                       Desc="Newton-Raphson · Secant · Bisection · Fixed Point"/>
+                                    <local:FeatureItem Icon="🔢" Title="Linear Systems"
+                                                       Desc="Gauss-Seidel iterative method"/>
+                                    <local:FeatureItem Icon="📈" Title="Interpolation"
+                                                       Desc="Lagrange · Newton Divided Differences"/>
+                                    <local:FeatureItem Icon="∫"  Title="Integration"
+                                                       Desc="Trapezoidal · Simpson's 1/3 Rule"/>
+                                    <local:FeatureItem Icon="📊" Title="Excel Export"
+                                                       Desc="Full .xlsx export with tables and charts"/>
+                                    <local:FeatureItem Icon="🧭" Title="Method Advisor"
+                                                       Desc="Smart recommendation based on your problem"/>
+                                </ItemsControl.Items>
+                            </ItemsControl>
+
+                            <Border Background="{StaticResource BrGrayBorder}" Height="1" Margin="0,20,0,16"/>
+                            <TextBlock Text="Designed for students learning numerical analysis."
+                                       FontSize="11" Foreground="{StaticResource BrWhiteMuted}"
+                                       HorizontalAlignment="Center" TextAlignment="Center"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</Window>

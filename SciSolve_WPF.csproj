@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+		<AssemblyName>SciSolve</AssemblyName>
+		<RootNamespace>SciSolve</RootNamespace>
+		<Platforms>AnyCPU</Platforms>
+		<LangVersion>latest</LangVersion>
+		<StartupObject>SciSolve.App</StartupObject>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="ClosedXML" Version="0.105.0" />
+	</ItemGroup>
+</Project>
